@@ -1,10 +1,10 @@
-package com.example.ankit.showfotos
+package com.example.ankit.showfotos.feature
 
 import android.content.Context
 import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.example.ankit.showfotos.extensions.centerCrop
 
 /**
  * Created by ankit on 11/04/18.
@@ -12,12 +12,10 @@ import com.bumptech.glide.request.RequestOptions
 internal class ImageController(private var context: Context, private var imgMain: ImageView) {
   
   fun setImgMain(path: Uri) {
-    val options = RequestOptions()
-        .centerCrop()
     Glide
         .with(context)
         .load(path)
-        .apply(options)
+        .centerCrop()
         .into(imgMain)
   }
 }

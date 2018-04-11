@@ -1,4 +1,4 @@
-package com.example.ankit.showfotos
+package com.example.ankit.showfotos.feature
 
 import android.app.Activity
 import android.content.Intent
@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Menu
+import android.view.MenuItem
+import com.example.ankit.showfotos.R
 import com.sangcomz.fishbun.FishBun
 import com.sangcomz.fishbun.adapter.image.impl.GlideAdapter
 import com.sangcomz.fishbun.define.Define
@@ -39,6 +42,21 @@ class MainActivity : AppCompatActivity() {
         .setActionBarTitle("FishBun Dark")
         .textOnNothingSelected("Please select three or more!")
         .startAlbum()
+  }
+  
+  override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    val inflater = menuInflater
+    inflater.inflate(R.menu.menu_main, menu)
+    return super.onCreateOptionsMenu(menu)
+  }
+  
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    val id = item.itemId
+    if (id == R.id.action_plus) {
+      
+      return true
+    }
+    return super.onOptionsItemSelected(item)
   }
   
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

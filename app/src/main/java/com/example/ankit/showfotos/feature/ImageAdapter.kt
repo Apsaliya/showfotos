@@ -1,4 +1,4 @@
-package com.example.ankit.showfotos
+package com.example.ankit.showfotos.feature
 
 import android.content.Context
 import android.net.Uri
@@ -8,7 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.example.ankit.showfotos.R
+import com.example.ankit.showfotos.extensions.centerCrop
 import java.util.ArrayList
 
 /**
@@ -24,12 +25,10 @@ internal class ImageAdapter(private var context: Context, private var imageContr
   
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     val imagePath = imagePaths[position]
-    val options = RequestOptions()
-        .centerCrop()
     
     Glide.with(context)
         .load(imagePath)
-        .apply(options)
+        .centerCrop()
         .into(holder.imageView)
     holder.imageView.setOnClickListener { imageController.setImgMain(imagePath) }
   }
