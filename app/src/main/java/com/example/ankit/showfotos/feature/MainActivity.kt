@@ -2,15 +2,17 @@ package com.example.ankit.showfotos.feature
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.example.ankit.showfotos.R
+import com.example.ankit.showfotos.extensions.*
+import com.example.ankit.showfotos.extensions.util.Constants.PERMISSION_STORAGE
 import com.sangcomz.fishbun.FishBun
 import com.sangcomz.fishbun.adapter.image.impl.GlideAdapter
 import com.sangcomz.fishbun.define.Define
@@ -19,28 +21,44 @@ import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
   
-  internal var path = ArrayList<Uri>()
+  private var uris = ArrayList<Uri>()
   
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    if (checkStoragePermission()) {
+      showGallery()
+    }
     recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-    recycler.adapter = ImageAdapter(this, ImageController(this, img), path)
+    recycler.adapter = ImageAdapter(this, ImageController(this, img), uris)
+  }
+  
+  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    when (requestCode) {
+      PERMISSION_STORAGE -> {
+        if (grantResults.isNotEmpty()) {
+          if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // permission was granted, yay!
+            showGallery()
+          } else {
+            Toast.makeText(this, R.string.permission_deny_msg, Toast.LENGTH_SHORT).show()
+            finish()
+          }
+        }
+      }
+    }
+  }
+  
+  private fun showGallery() {
+    uris.clear()
     FishBun.with(this)
         .setImageAdapter(GlideAdapter())
-        .setMaxCount(10)
-        .setPickerSpanCount(5)
-        .setActionBarColor(Color.parseColor("#795548"), Color.parseColor("#5D4037"), false)
-        .setActionBarTitleColor(Color.parseColor("#ffffff"))
-        .setSelectedImages(path)
-        .setAlbumSpanCount(2, 3)
-        .setButtonInAlbumActivity(false)
-        .setReachLimitAutomaticClose(true)
-        .setHomeAsUpIndicatorDrawable(ContextCompat.getDrawable(this, R.drawable.back))
-        .setOkButtonDrawable(ContextCompat.getDrawable(this, R.drawable.done))
-        .setAllViewTitle("All")
-        .setActionBarTitle("FishBun Dark")
-        .textOnNothingSelected("Please select three or more!")
+        .setSelectedImages(uris)
+        .prepareActionBar(this)
+        .setCounts()
+        .setDefaults()
+        .setDrawables(this)
+        .setTexts(this)
         .startAlbum()
   }
   
@@ -53,7 +71,7 @@ class MainActivity : AppCompatActivity() {
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     val id = item.itemId
     if (id == R.id.action_plus) {
-      
+      showGallery()
       return true
     }
     return super.onOptionsItemSelected(item)
@@ -63,8 +81,8 @@ class MainActivity : AppCompatActivity() {
     super.onActivityResult(requestCode, resultCode, data)
     when (requestCode) {
       Define.ALBUM_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-        path = data?.getParcelableArrayListExtra<Uri>(Define.INTENT_PATH) as ArrayList<Uri>
-        (recycler.adapter as ImageAdapter).changePath(path)
+        uris = data?.getParcelableArrayListExtra<Uri>(Define.INTENT_PATH) as ArrayList<Uri>
+        (recycler.adapter as ImageAdapter).dispatchUpdates(uris)
       }
     }
   }

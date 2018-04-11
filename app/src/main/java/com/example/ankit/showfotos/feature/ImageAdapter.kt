@@ -33,17 +33,15 @@ internal class ImageAdapter(private var context: Context, private var imageContr
     holder.imageView.setOnClickListener { imageController.setImgMain(imagePath) }
   }
   
-  fun changePath(imagePaths: ArrayList<Uri>) {
+  fun dispatchUpdates(imagePaths: ArrayList<Uri>) {
     this.imagePaths = imagePaths
     imageController.setImgMain(imagePaths[0])
     notifyDataSetChanged()
   }
   
-  override fun getItemCount(): Int {
-    return imagePaths.size
-  }
+  override fun getItemCount() = imagePaths.size
   
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    internal var imageView: ImageView = itemView.findViewById<View>(R.id.img_item) as ImageView
+    internal var imageView = itemView.findViewById<View>(R.id.img_item) as ImageView
   }
 }
