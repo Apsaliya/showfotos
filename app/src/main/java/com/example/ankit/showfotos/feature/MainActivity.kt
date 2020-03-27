@@ -21,7 +21,7 @@ import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
   
-  private var uris = ArrayList<Uri>()
+  private var uris = ArrayList<Uri>() // this is a comment
   
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
