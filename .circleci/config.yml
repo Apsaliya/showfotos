@@ -3,25 +3,22 @@ version: 2
 # Use a package of configuration called an orb.
 jobs:
   ## Run unit tests
-  docker:
-      - image: circleci/android:api-29
   test_unit:
-    - checkout
-    - run:
-       name: Ruby dependencies
-       command: bundle check || bundle install --path vendor/bundle
+    working_directory: ~/showfotos
 
-    - run:
-       name: Android dependencies
-       command: ./gradlew androidDependencies
-       
-    - run:
-        name: Run unit tests
-        command: bundle exec fastlane test
+    docker:
+      - image: circleci/android:api-29
 
-workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
-    jobs:
-      #- welcome/run
+    steps:
+      - checkout
+      - run:
+          name: Ruby dependencies
+          command: bundle check || bundle install --path vendor/bundle
+
+      - run:
+          name: Android dependencies
+          command: ./gradlew androidDependencies
+
+      - run:
+          name: Run unit tests
+          command: bundle exec fastlane test
