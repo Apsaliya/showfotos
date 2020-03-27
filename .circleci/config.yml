@@ -3,7 +3,7 @@ version: 2
 # Use a package of configuration called an orb.
 jobs:
   ## Run unit tests
-  test_unit:
+  build:
     working_directory: ~/showfotos
 
     docker:
