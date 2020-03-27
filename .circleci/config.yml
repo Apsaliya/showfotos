@@ -3,14 +3,18 @@ version: 2
 # Use a package of configuration called an orb.
 jobs:
   ## Run unit tests
+  docker:
+      - image: circleci/android:api-29
   test_unit:
     - checkout
-    - *restore_gradle_cache
-    - *restore_gems_cache
-    - *ruby_dependencies
-    - *android_dependencies
-    - *save_gradle_cache
-    - *save_gems_cache
+    - run:
+       name: Ruby dependencies
+       command: bundle check || bundle install --path vendor/bundle
+
+    - run:
+       name: Android dependencies
+       command: ./gradlew androidDependencies
+       
     - run:
         name: Run unit tests
         command: bundle exec fastlane test
